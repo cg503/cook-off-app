@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  h1= title
+  p Please rate the meatball along the following dimensions, on a scale of 1 to 5.
+
+  form#formAddUser(name="meatballs",method="post",action="/meatballs")
+    input(name='meatball_ID', value=ID, type="hidden")
+    input(name='food', value=food, type="hidden")
+    label Sauce: 
+    input#inputUserName(type="number", name="sauce")
+    p 
+    label Originality: 
+    input#inputUserEmail(type="number", name="originality")
+    p
+    button#btnSubmit(type="submit") Submit
