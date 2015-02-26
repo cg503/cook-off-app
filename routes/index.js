@@ -45,7 +45,7 @@ router.get('/complete', function(req,res) {
 
 /* GET Invalid vote page. */
 router.get('/invalid', function(req,res) {
-	res.render('invalid', {title: 'Please only rate on a scale of 1-10. You vote has not been recorded. Try again.'});
+	res.render('invalid', {title: 'DENIED'});
 });
 
 /* POST to Add User Service */
@@ -103,41 +103,43 @@ router.post('/meatballs', function(req, res) {
 		// If body could not be validated and error was sent to the express error handler.
 	});
 	
-	// Validate vote values with new iz library. (trying it without this code)
+	// Set vote array so it validates all four dimensions.
+	var vote_array = [taste, texture, originality, sauce]
 	
-	//Set error
-	if (iz.between(sauce, 1,5) == false) { 
-		err = 'error';
+	// Validate votes. Set condition to check if false
+	if (iz.between(vote_array, 1,10) == false) { 
+		res.location("invalid");
+		res.redirect("invalid");
 	}
 	else {
-		console.log('all good');
+		// Set our collection
+		var collection = db.get('cookoffdata');
+	
+	
+		// Submit to the DB
+		collection.insert({
+			"meatball_ID" : meatball_ID,
+			"sauce" : sauce,
+			"originality" : originality,
+			"taste" : taste,
+			"texture" : texture,
+			"food" : food
+		
+		}, function (err, doc) {
+			if (err) { 
+				// If it failed, return error
+				res.send("There was a problem adding the information to the database.")
+			}
+			else {
+				// If it worked, set the header so the address bar doesn't still say /meatballs
+				res.location("complete");
+				// And forward to success page
+				res.redirect("complete");
+			}
+		});
 	}
 	
-	// Set our collection
-	var collection = db.get('cookoffdata');
 	
-	// Submit to the DB
-	collection.insert({
-		"meatball_ID" : meatball_ID,
-		"sauce" : sauce,
-		"originality" : originality,
-		"taste" : taste,
-		"texture" : texture,
-		"food" : food
-		
-	}, function (err, doc) {
-		if (iz.between(sauce, 1,10) == false) { 
-	
-			// If it failed, return error
-			res.send("There was a problem adding the information to the database.")
-		}
-		else {
-			// If it worked, set the header so the address bar doesn't still say /meatballs
-			res.location("complete");
-			// And forward to success page
-			res.redirect("complete");
-		}
-	});
 });
 
 module.exports = router;
