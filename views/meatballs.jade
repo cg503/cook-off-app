@@ -2,15 +2,21 @@ extends layout
 
 block content
   h1= title
-  p Please rate the meatball along the following dimensions, on a scale of 1 to 5.
+  p Please rate the meatball along the following dimensions, on a scale of 1 (worst) to 10 (best).
 
   form#formAddUser(name="meatballs",method="post",action="/meatballs")
     input(name='meatball_ID', value=ID, type="hidden")
     input(name='food', value=food, type="hidden")
-    label Sauce: 
-    input#inputUserName(type="number", name="sauce")
+    label Taste: 
+    input#inputUserName(type="number", name="taste", required)
     p 
+    label Texture: 
+    input#inputUserName(type="number", name="texture", required)
+    p
     label Originality: 
-    input#inputUserEmail(type="number", name="originality")
+    input#inputUserEmail(type="number", name="originality", required)
+    p
+    label Sauce: 
+    input#inputUserName(type="number", name="sauce", required)
     p
     button#btnSubmit(type="submit") Submit

@@ -11,7 +11,7 @@ var monk = require('monk');
 var mongoUri = process.env.MONGOLAB_URI || 'localhost:27017/nodetest1';
 var db = monk(mongoUri);
 
-var routes = require('./routes/index');
+var routes = require('./routes/index');//mongodb://heroku_app34318469:vh0nqj7hu65nvb4gaudnhips2e@ds049161.mongolab.com:49161/heroku_app34318469
 var users = require('./routes/users');
 
 var app = express();
