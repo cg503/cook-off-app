@@ -84,6 +84,7 @@ router.post('/meatballs', function(req, res) {
 	console.log("here");
 	// Set our internal DB variable
 	var db = req.db;
+	require('http');
 	
 	// Get our form values. These rely on the "name" attributes
 	var meatball_ID = req.body.meatball_ID;
@@ -92,6 +93,8 @@ router.post('/meatballs', function(req, res) {
 	var taste = req.body.taste;
 	var texture = req.body.texture;
 	var food = req.body.food;
+	var voter_IP = req.connection.remoteAddress;
+	console.log(voter_IP);
 	
 	// Validate vote values with stupid old library that didn't work
 	var voteSauceValidationSchema = {
@@ -104,10 +107,21 @@ router.post('/meatballs', function(req, res) {
 	});
 	
 	// Set vote array so it validates all four dimensions.
-	var vote_array = [taste, texture, originality, sauce]
+	var vote_array = [taste, texture, originality, sauce];
+	var failure_rate = 0;
+	for (var i = 0; i < 4; i++) {
+		console.log(vote_array[i]);
+		if (iz.between(vote_array[i], 1,10) == false) { 
+		failure_rate = 1;
+		console.log(failure_rate);
+		}
+	}
+	console.log(failure_rate);
 	
 	// Validate votes. Set condition to check if false
-	if (iz.between(vote_array, 1,10) == false) { 
+	if (failure_rate == 1) {
+	
+	// if (iz.between(vote_array, 1,10) == false) { 
 		res.location("invalid");
 		res.redirect("invalid");
 	}
@@ -117,13 +131,15 @@ router.post('/meatballs', function(req, res) {
 	
 	
 		// Submit to the DB
+		console.log("checkpoint");
 		collection.insert({
 			"meatball_ID" : meatball_ID,
 			"sauce" : sauce,
 			"originality" : originality,
 			"taste" : taste,
 			"texture" : texture,
-			"food" : food
+			"food" : food,
+			"voter_IP" : voter_IP
 		
 		}, function (err, doc) {
 			if (err) { 
