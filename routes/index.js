@@ -38,6 +38,13 @@ router.get('/meatballs/:meatball_ID', function(req,res) {
 	res.render('meatballs', { title: 'Vote for Meatball ' + meatball_ID , ID: meatball_ID , food: food });
 });
 
+/* GET Picnic page. */
+router.get('/picnic/:picnic_ID', function(req,res) {
+	var picnic_ID = req.params.picnic_ID;
+	var food = "picnic";
+	res.render('picnic', { title: 'Vote for Picnic Plate ' + picnic_ID , ID: picnic_ID , food: food });
+});
+
 /*GET Complete page. */
 router.get('/complete', function(req,res) {
 	res.render('complete', {title: 'Thank you for voting!' });
@@ -94,17 +101,6 @@ router.post('/meatballs', function(req, res) {
 	var texture = req.body.texture;
 	var food = req.body.food;
 	var voter_IP = req.connection.remoteAddress;
-	console.log(voter_IP);
-	
-	// Validate vote values with stupid old library that didn't work
-	var voteSauceValidationSchema = {
-		"sauce": { type: 'array', len: '1-5', required: true }
-	};
-	
-	router.post('meatballs/:meatball_ID', validate.body(voteSauceValidationSchema), function(req, res) {
-		// req.body is now validated and no further validation needs to take place.
-		// If body could not be validated and error was sent to the express error handler.
-	});
 	
 	// Set vote array so it validates all four dimensions.
 	var vote_array = [taste, texture, originality, sauce];
@@ -138,6 +134,72 @@ router.post('/meatballs', function(req, res) {
 			"originality" : originality,
 			"taste" : taste,
 			"texture" : texture,
+			"food" : food,
+			"voter_IP" : voter_IP
+		
+		}, function (err, doc) {
+			if (err) { 
+				// If it failed, return error
+				res.send("There was a problem adding the information to the database.")
+			}
+			else {
+				// If it worked, set the header so the address bar doesn't still say /meatballs
+				res.location("complete");
+				// And forward to success page
+				res.redirect("complete");
+			}
+		});
+	}
+	
+	
+});
+
+/* POST to Picnic Service */
+router.post('/picnic', function(req, res) {
+	console.log("here");
+	// Set our internal DB variable
+	var db = req.db;
+	require('http');
+	
+	// Get our form values. These rely on the "name" attributes
+	var picnic_ID = req.body.picnic_ID;
+	var visual_presentation = req.body.visual_presentation;
+	var taste = req.body.taste;
+	var execution_of_theme = req.body.execution_of_theme;
+	var food = req.body.food;
+	var voter_IP = req.connection.remoteAddress;
+	
+	// Set vote array so it validates all four dimensions.
+	var vote_array = [taste, visual_presentation, execution_of_theme];
+	var failure_rate = 0;
+	for (var i = 0; i < 3; i++) {
+		console.log(vote_array[i]);
+		if (iz.between(vote_array[i], 1,10) == false) { 
+		failure_rate = 1;
+		console.log(failure_rate);
+		}
+	}
+	console.log(failure_rate);
+	
+	// Validate votes. Set condition to check if false
+	if (failure_rate == 1) {
+	
+	// if (iz.between(vote_array, 1,10) == false) { 
+		res.location("invalid");
+		res.redirect("invalid");
+	}
+	else {
+		// Set our collection
+		var collection = db.get('cookoffdata');
+	
+	
+		// Submit to the DB
+		console.log("checkpoint");
+		collection.insert({
+			"picnic_ID" : picnic_ID,
+			"execution_of_theme" : execution_of_theme,
+			"taste" : taste,
+			"visual_presentation" : visual_presentation,
 			"food" : food,
 			"voter_IP" : voter_IP
 		

@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  h1= title
+  p Please rate the picnic plate along the following dimensions, on a scale of 1 (worst) to 10 (best).
+
+  form#formAddUser(name="picnic",method="post",action="/picnic")
+    input(name='picnic_ID', value=ID, type="hidden")
+    input(name='food', value=food, type="hidden")
+    label Taste: 
+    input#inputUserName(type="number", name="taste", required)
+    p 
+    label Visual Presentation: 
+    input#inputUserName(type="number", name="visual_presentation", required)
+    p
+    label Execution of Theme: 
+    input#inputUserEmail(type="number", name="execution_of_theme", required)
+    p
+
+    button#btnSubmit(type="submit") Submit
