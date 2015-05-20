@@ -5,7 +5,7 @@ block content
   p Please rate the picnic plate along the following dimensions, on a scale of 1 (worst) to 10 (best).
 
   form#formAddUser(name="picnic",method="post",action="/picnic")
-    input(name='picnic_ID', value=ID, type="hidden")
+    input(name='entrant_ID', value=ID, type="hidden")
     input(name='food', value=food, type="hidden")
     label Taste: 
     input#inputUserName(type="number", name="taste", required)

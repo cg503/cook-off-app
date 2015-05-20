@@ -32,17 +32,17 @@ router.get('/newuser', function(req,res) {
 });
 
 /* GET Meatballs page. */
-router.get('/meatballs/:meatball_ID', function(req,res) {
-	var meatball_ID = req.params.meatball_ID;
+router.get('/meatballs/:entrant_ID', function(req,res) {
+	var entrant_ID = req.params.entrant_ID;
 	var food = "meatballs";
-	res.render('meatballs', { title: 'Vote for Meatball ' + meatball_ID , ID: meatball_ID , food: food });
+	res.render('meatballs', { title: 'Vote for Meatball ' + entrant_ID , ID: entrant_ID , food: food });
 });
 
 /* GET Picnic page. */
-router.get('/picnic/:picnic_ID', function(req,res) {
-	var picnic_ID = req.params.picnic_ID;
+router.get('/picnic/:entrant_ID', function(req,res) {
+	var entrant_ID = req.params.entrant_ID;
 	var food = "picnic";
-	res.render('picnic', { title: 'Vote for Picnic Plate ' + picnic_ID , ID: picnic_ID , food: food });
+	res.render('picnic', { title: 'Vote for Picnic Plate ' + entrant_ID , ID: entrant_ID , food: food });
 });
 
 /*GET Complete page. */
@@ -94,7 +94,7 @@ router.post('/meatballs', function(req, res) {
 	require('http');
 	
 	// Get our form values. These rely on the "name" attributes
-	var meatball_ID = req.body.meatball_ID;
+	var entrant_ID = req.body.entrant_ID;
 	var sauce = req.body.sauce;
 	var originality = req.body.originality;
 	var taste = req.body.taste;
@@ -129,7 +129,7 @@ router.post('/meatballs', function(req, res) {
 		// Submit to the DB
 		console.log("checkpoint");
 		collection.insert({
-			"meatball_ID" : meatball_ID,
+			"entrant_ID" : entrant_ID,
 			"sauce" : sauce,
 			"originality" : originality,
 			"taste" : taste,
@@ -162,7 +162,7 @@ router.post('/picnic', function(req, res) {
 	require('http');
 	
 	// Get our form values. These rely on the "name" attributes
-	var picnic_ID = req.body.picnic_ID;
+	var entrant_ID = req.body.entrant_ID;
 	var visual_presentation = req.body.visual_presentation;
 	var taste = req.body.taste;
 	var execution_of_theme = req.body.execution_of_theme;
@@ -196,7 +196,7 @@ router.post('/picnic', function(req, res) {
 		// Submit to the DB
 		console.log("checkpoint");
 		collection.insert({
-			"picnic_ID" : picnic_ID,
+			"entrant_ID" : entrant_ID,
 			"execution_of_theme" : execution_of_theme,
 			"taste" : taste,
 			"visual_presentation" : visual_presentation,
@@ -209,7 +209,7 @@ router.post('/picnic', function(req, res) {
 				res.send("There was a problem adding the information to the database.")
 			}
 			else {
-				// If it worked, set the header so the address bar doesn't still say /meatballs
+				// If it worked, set the header so the address bar doesn't still say /meatballs or whatever
 				res.location("complete");
 				// And forward to success page
 				res.redirect("complete");
